@@ -1,4 +1,13 @@
+import { notFound } from "next/navigation";
 import style from "./page.module.css";
+
+//아래 설정을 하면, id가 1,2,3 외에 값은 모두 404 not found페이지가 호출됨
+// export const dynamicParams = false;
+
+//getStaticPath(페이지라우팅)의 AppRouter버전임
+export function generateStaticParams() {
+  return [{ id: "1" }, { id: "2" }, { id: "3" }]; //주의사항: id값을 문자열로만 써야함
+}
 
 //props에서 params만 꺼내서 쓰기 위해 파라미터 첫번째와 같이 설정
 //params는 Promise 객체임
@@ -9,11 +18,17 @@ export default async function Page({
 }: {
   params: Promise<{ id: string | string[] }>;
 }) {
+  //GenerateStaticParams라는 함수를 내보내 주시게 되면 페이지 컴퍼넌트 내부에
+  // 데이터 캐싱이 설정되지 않은 이러한 데이터 페칭인 fetch가 존재하게 될지라도 무조건 해당하는
+  // 페이지가 static 페이지로서 강제로 설정이 된다는 점
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${(await params).id}`
   );
 
   if (!response.ok) {
+    if (response.status === 404) {
+      notFound();
+    }
     return <div>오류가 발생했습니다...</div>;
   }
 
