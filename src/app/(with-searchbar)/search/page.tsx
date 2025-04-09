@@ -1,6 +1,10 @@
 import BookItem from "@/components/book-item";
 import { BookData } from "@/types";
 
+// 서치페이지를 강제 스태틱설정시, 쿼리스트링에 의존하고 있는 이 페이지는 검색기능이 마비됨
+// 강제 static설정시, 아래 동적함수의 searchParams의 값은 빈값으로 설정됨
+//export const dynamic = "force-static";
+
 export default async function Page({
   searchParams,
 }: {
